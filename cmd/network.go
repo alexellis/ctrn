@@ -23,6 +23,8 @@ func netRunner(cmd *cobra.Command, args []string) {
 		log.Fatalf("Fail to load container helloweb: %v\n", err)
 	}
 
+	fmt.Println(container)
+
 	task, err := container.NewTask(rootCtx, cio.NewCreator(cio.WithStdio))
 	if err != nil {
 		log.Fatalf("Fail to create task: %v", err)
@@ -32,7 +34,7 @@ func netRunner(cmd *cobra.Command, args []string) {
 	netns := getNetns(task.Pid())
 
 	cni, err := gocni.New(gocni.WithPluginConfDir("./net.d/"),
-		gocni.WithPluginDir([]string{"/usr/lib/cni"}))
+		gocni.WithPluginDir([]string{"/home/alex/go/src/github.com/containernetworking/plugins/bin/"}))
 
 	// Load the cni configuration
 
@@ -40,7 +42,11 @@ func netRunner(cmd *cobra.Command, args []string) {
 		log.Fatalf("Failed to load cni configuration: %v", err)
 	}
 
-	result, err := cni.Setup(id, netns)
+	labels := map[string]string{
+		"OPENFAAS": "yes",
+	}
+
+	result, err := cni.Setup(rootCtx, id, netns, gocni.WithLabels(labels))
 	if err != nil {
 		log.Fatalf("failed to setup network for namespace %q: %v", id, err)
 	}
