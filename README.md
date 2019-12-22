@@ -4,6 +4,11 @@ written for learning/sandboxing.
 Forked by Alex Ellis
 
 ```sh
-go build && sudo ./ctrofr create
-go build && sudo ./ctrofr net
+go build 
+
+sudo ./ctrofr create
+sudo ./ctrofr net
+
+sudo ctr task rm helloweb  --force
+sudo ctr container rm helloweb
 ```

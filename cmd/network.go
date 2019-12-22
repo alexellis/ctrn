@@ -43,7 +43,7 @@ func netRunner(cmd *cobra.Command, args []string) {
 	}
 
 	labels := map[string]string{
-		"OPENFAAS": "yes",
+		// "OPENFAAS": "yes",
 	}
 
 	result, err := cni.Setup(rootCtx, id, netns, gocni.WithLabels(labels))
