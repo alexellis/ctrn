@@ -18,13 +18,20 @@ sudo ctr task rm helloweb  --force
 sudo ctr container rm helloweb
 ```
 
-Working example end to end:
+## Working example end to end
+
+### Create the container
 
 ```sh
 alex@alexx:~/go/src/github.com/alexellis/ctrn$ sudo ./ctrn create
 &{0xc0003b20d0 helloweb {helloweb map[] docker.io/functions/figlet:latest {io.containerd.runc.v2 <nil>} 0xc00043e000 hello-snapshot overlayfs {267854
 372 63712604158 <nil>} {267854372 63712604158 <nil>} map[]}}
-alex@alexx:~/go/src/github.com/alexellis/ctrn$ sudo ./ctrn net
+```
+
+### Create the task and get an IP
+
+```
+alex@alexx:~/go/src/github.com/alexellis/ctrn$ sudo ./ctrn start
 &{0xc000382410 helloweb {helloweb map[] docker.io/functions/figlet:latest {io.containerd.runc.v2 <nil>} 0xc0003f6280 hello-snapshot overlayfs {267854
 372 63712604158 <nil>} {267854372 63712604158 <nil>} map[]}}
 Config of interface lo: &{[0xc0003df980 0xc0003df9b0] 00:00:00:00:00:00 /proc/14082/ns/net}
@@ -35,7 +42,10 @@ Config of interface eth0: &{[0xc0003df9e0] 9e:a5:79:af:39:ab /proc/14082/ns/net}
 2019/12/22 09:36:00 Read/write timeout: 5s, 5s. Port: 8080
 2019/12/22 09:36:00 Writing lock-file to: /tmp/.lock
 2019/12/22 09:36:00 Metrics server. Port: 8081
+```
 
+### Find the IP for the task
+```
 alex@alexx:~/go/src/github.com/alexellis/ctrn$ sudo ctr task ls
 TASK        PID      STATUS    
 helloweb    14082    RUNNING
@@ -58,7 +68,11 @@ lo        Link encap:Local Loopback
           TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
           collisions:0 txqueuelen:1 
           RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+```
 
+### Access the service from within the task
+
+```
 alex@alexx:~/go/src/github.com/alexellis/ctrn$ curl -d CNI 10.10.10.4:8080
   ____ _   _ ___ 
  / ___| \ | |_ _|
@@ -69,7 +83,7 @@ alex@alexx:~/go/src/github.com/alexellis/ctrn$ curl -d CNI 10.10.10.4:8080
 alex@alexx:~/go/src/github.com/alexellis/ctrn$ 
 ```
 
-Firecracker notes:
+## Firecracker notes
 
 ```bash
 
@@ -79,4 +93,3 @@ RUNTIME=aws.firecracker \
   sudo -E ./ctrn remove
 
 ```
-

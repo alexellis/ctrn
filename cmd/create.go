@@ -46,6 +46,7 @@ func createRunner(cmd *cobra.Command, args []string) error {
 		rootCtx,
 		name,
 		containerd.WithImage(image),
+		containerd.WithSnapshotter(snapshotter),
 		containerd.WithRuntime(runtime, &options.Options{}),
 		containerd.WithNewSnapshot(name+"-snapshot", image),
 		containerd.WithNewSpec(

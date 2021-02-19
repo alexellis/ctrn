@@ -11,12 +11,12 @@ import (
 	gocni "github.com/containerd/go-cni"
 )
 
-var netCmd = &cobra.Command{
-	Use:  "net",
-	RunE: netRunner,
+var startCmd = &cobra.Command{
+	Use:  "start",
+	RunE: startRunner,
 }
 
-func netRunner(cmd *cobra.Command, args []string) error {
+func startRunner(cmd *cobra.Command, args []string) error {
 	name := "helloweb"
 
 	container, err := client.LoadContainer(rootCtx, name)

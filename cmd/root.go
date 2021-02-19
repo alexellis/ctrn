@@ -39,7 +39,8 @@ func init() {
 
 	rootCmd.AddCommand(infoCmd)
 	rootCmd.AddCommand(specCmd)
-	rootCmd.AddCommand(netCmd)
+	rootCmd.AddCommand(startCmd)
+
 	rootCmd.SilenceErrors = true
 	rootCmd.SilenceUsage = true
 }
