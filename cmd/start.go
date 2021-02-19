@@ -32,7 +32,6 @@ func startRunner(cmd *cobra.Command, args []string) error {
 	}
 	fmt.Printf("Task %v\n", task)
 	id := uuid.New().String()
-	netns := getNetns(task.Pid())
 
 	cni, err := gocni.New(
 		gocni.WithPluginConfDir("./net.d/"),
@@ -48,10 +47,9 @@ func startRunner(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("failed to load cni configuration: %v", err)
 	}
 
-	labels := map[string]string{
-		// "OPENFAAS": "yes",
-	}
+	labels := map[string]string{}
 
+	netns := getNetns(task.Pid())
 	result, err := cni.Setup(rootCtx, id, netns, gocni.WithLabels(labels))
 	if err != nil {
 		return fmt.Errorf("failed to setup network for namespace %q: %v", id, err)

@@ -2,7 +2,6 @@
 
 Example forked by Alex Ellis and fixed up from [renatofq/ctrofb](https://github.com/renatofq/ctrofb)
 
-
 ## Building / testing
 
 ```sh

@@ -5,9 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Microsoft/hcsshim/cmd/containerd-shim-runhcs-v1/options"
 	"github.com/containerd/containerd/errdefs"
-
 	"github.com/spf13/cobra"
 
 	"github.com/containerd/containerd"
@@ -47,7 +45,7 @@ func createRunner(cmd *cobra.Command, args []string) error {
 		name,
 		containerd.WithImage(image),
 		containerd.WithSnapshotter(snapshotter),
-		containerd.WithRuntime(runtime, &options.Options{}),
+		containerd.WithRuntime(runtime, nil),
 		containerd.WithNewSnapshot(name+"-snapshot", image),
 		containerd.WithNewSpec(
 			oci.WithImageConfig(image),
