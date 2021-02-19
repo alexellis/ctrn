@@ -1,17 +1,18 @@
 End to end example of using CNI with containerd.
 
-Example forked by Alex Ellis and fixed up from [renatofq/ctrofb](https://github.com/renatofq/ctrofb)
+Example forked by Alex Ellis and fixed up from [alexellis/ctrofb](https://github.com/alexellis/ctrofb)
 
 Building / testing:
 
 ```sh
-# Update "/home/alex/go/src/github.com/containernetworking/plugins/bin/"
-# Set to where you built the CNI plugins
+# Get the CNI plugins to:
+
+# https://github.com/containernetworking/plugins
 
 go build 
 
-sudo ./ctrofr create
-sudo ./ctrofr net
+sudo ./ctrn create
+sudo ./ctrn net
 
 sudo ctr task rm helloweb  --force
 sudo ctr container rm helloweb
@@ -20,10 +21,10 @@ sudo ctr container rm helloweb
 Working example end to end:
 
 ```sh
-alex@alexx:~/go/src/github.com/renatofq/ctrofr$ sudo ./ctrofr create
+alex@alexx:~/go/src/github.com/alexellis/ctrn$ sudo ./ctrn create
 &{0xc0003b20d0 helloweb {helloweb map[] docker.io/functions/figlet:latest {io.containerd.runc.v2 <nil>} 0xc00043e000 hello-snapshot overlayfs {267854
 372 63712604158 <nil>} {267854372 63712604158 <nil>} map[]}}
-alex@alexx:~/go/src/github.com/renatofq/ctrofr$ sudo ./ctrofr net
+alex@alexx:~/go/src/github.com/alexellis/ctrn$ sudo ./ctrn net
 &{0xc000382410 helloweb {helloweb map[] docker.io/functions/figlet:latest {io.containerd.runc.v2 <nil>} 0xc0003f6280 hello-snapshot overlayfs {267854
 372 63712604158 <nil>} {267854372 63712604158 <nil>} map[]}}
 Config of interface lo: &{[0xc0003df980 0xc0003df9b0] 00:00:00:00:00:00 /proc/14082/ns/net}
@@ -34,10 +35,12 @@ Config of interface eth0: &{[0xc0003df9e0] 9e:a5:79:af:39:ab /proc/14082/ns/net}
 2019/12/22 09:36:00 Read/write timeout: 5s, 5s. Port: 8080
 2019/12/22 09:36:00 Writing lock-file to: /tmp/.lock
 2019/12/22 09:36:00 Metrics server. Port: 8081
-alex@alexx:~/go/src/github.com/renatofq/ctrofr$ sudo ctr task ls
+
+alex@alexx:~/go/src/github.com/alexellis/ctrn$ sudo ctr task ls
 TASK        PID      STATUS    
 helloweb    14082    RUNNING
-alex@alexx:~/go/src/github.com/renatofq/ctrofr$ sudo ctr task exec --exec-id 14082 helloweb ifconfig
+
+alex@alexx:~/go/src/github.com/alexellis/ctrn$ sudo ctr task exec --exec-id 14082 helloweb ifconfig
 eth0      Link encap:Ethernet  HWaddr 9E:A5:79:AF:39:AB  
           inet addr:10.10.10.4  Bcast:10.10.10.255  Mask:255.255.255.0
           inet6 addr: fe80::9ca5:79ff:feaf:39ab/64 Scope:Link
@@ -56,12 +59,13 @@ lo        Link encap:Local Loopback
           collisions:0 txqueuelen:1 
           RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
 
-alex@alexx:~/go/src/github.com/renatofq/ctrofr$ curl -d CNI 10.10.10.4:8080
+alex@alexx:~/go/src/github.com/alexellis/ctrn$ curl -d CNI 10.10.10.4:8080
   ____ _   _ ___ 
  / ___| \ | |_ _|
 | |   |  \| || | 
 | |___| |\  || | 
  \____|_| \_|___|
                  
-alex@alexx:~/go/src/github.com/renatofq/ctrofr$ 
+alex@alexx:~/go/src/github.com/alexellis/ctrn$ 
 ```
+

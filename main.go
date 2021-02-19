@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/renatofq/ctrofr/cmd"
+	"github.com/alexellis/ctrn/cmd"
 )
 
 func main() {
-	cmd.Execute();
+	cmd.Execute()
 }

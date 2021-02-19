@@ -4,17 +4,17 @@ import (
 	"context"
 	"log"
 
-	"github.com/spf13/cobra"
 	"github.com/containerd/containerd"
 	"github.com/containerd/containerd/namespaces"
+	"github.com/spf13/cobra"
 )
 
 var (
-	client *containerd.Client
+	client  *containerd.Client
 	rootCtx context.Context
 )
 
-var rootCmd = &cobra.Command{ Use: "ctrofr" }
+var rootCmd = &cobra.Command{Use: "ctrn"}
 
 func init() {
 	c, err := containerd.New("/run/containerd/containerd.sock")
@@ -27,14 +27,18 @@ func init() {
 	rootCtx = namespaces.WithNamespace(context.Background(), "default")
 
 	rootCmd.AddCommand(createCmd)
+	rootCmd.AddCommand(removeCmd)
+
 	rootCmd.AddCommand(infoCmd)
 	rootCmd.AddCommand(specCmd)
 	rootCmd.AddCommand(netCmd)
+	rootCmd.SilenceErrors = true
+	rootCmd.SilenceUsage = true
 }
 
 // Execute is the entry point of the application
 func Execute() {
-	if err:= rootCmd.Execute(); err != nil {
+	if err := rootCmd.Execute(); err != nil {
 		log.Fatal(err)
 	}
 }
