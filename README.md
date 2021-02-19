@@ -1,21 +1,29 @@
-End to end example of using CNI with containerd.
+# Add networking to containerd with CNI
 
-Example forked by Alex Ellis and fixed up from [alexellis/ctrofb](https://github.com/alexellis/ctrofb)
+Example forked by Alex Ellis and fixed up from [renatofq/ctrofb](https://github.com/renatofq/ctrofb)
 
-Building / testing:
+
+## Building / testing
 
 ```sh
 # Get the CNI plugins to:
 
+# /opt/cni/bin/
+
 # https://github.com/containernetworking/plugins
+
+# Copy net.d/* to /etc/cni/net.d/
+
+# cp net.d/* /etc/cni/net.d/
 
 go build 
 
 sudo ./ctrn create
-sudo ./ctrn net
+sudo ./ctrn start
 
-sudo ctr task rm helloweb  --force
-sudo ctr container rm helloweb
+# Follow instructions to find IP and access service which is figlet on port 8080
+
+sudo ./ctrn remove
 ```
 
 ## Working example end to end
