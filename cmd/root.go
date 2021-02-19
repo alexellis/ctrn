@@ -3,6 +3,7 @@ package cmd
 import (
 	"context"
 	"log"
+	"os"
 
 	"github.com/containerd/containerd"
 	"github.com/containerd/containerd/namespaces"
@@ -16,8 +17,15 @@ var (
 
 var rootCmd = &cobra.Command{Use: "ctrn"}
 
+const defaultSnapshotter = "overlayfs"
+
 func init() {
-	c, err := containerd.New("/run/containerd/containerd.sock")
+	sock := "/run/containerd/containerd.sock"
+	if val, ok := os.LookupEnv("CONTAINERD"); ok && len(val) > 0 {
+		sock = val
+	}
+
+	c, err := containerd.New(sock)
 	if err != nil {
 		log.Fatalf("fail to connect to containerd: %v", err)
 	}

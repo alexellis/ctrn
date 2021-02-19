@@ -3,8 +3,9 @@ package cmd
 import (
 	"context"
 	"fmt"
-	"log"
+	"os"
 
+	"github.com/Microsoft/hcsshim/cmd/containerd-shim-runhcs-v1/options"
 	"github.com/containerd/containerd/errdefs"
 
 	"github.com/spf13/cobra"
@@ -14,39 +15,55 @@ import (
 )
 
 var createCmd = &cobra.Command{
-	Use: "create",
-	Run: createRunner,
+	Use:  "create",
+	RunE: createRunner,
 }
 
-func createRunner(cmd *cobra.Command, args []string) {
+func createRunner(cmd *cobra.Command, args []string) error {
 	ref := "docker.io/functions/figlet:latest"
+	name := "helloweb"
 
-	image, err := prepareImage(rootCtx, client, ref)
+	snapshotter := defaultSnapshotter
+	if val, ok := os.LookupEnv("SNAPSHOTTER"); ok && len(val) > 0 {
+		snapshotter = val
+	}
+
+	image, err := prepareImage(rootCtx, client, ref, snapshotter)
 
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
+
+	runtime := ""
+	if val, ok := os.LookupEnv("RUNTIME"); ok && len(val) > 0 {
+		runtime = val
+	}
+
+	fmt.Printf("Runtime: %s\tSnapshotter: %s\n", runtime, snapshotter)
 
 	// create a container
-	container, errC := client.NewContainer(
+	container, err := client.NewContainer(
 		rootCtx,
-		"helloweb",
+		name,
 		containerd.WithImage(image),
-		containerd.WithNewSnapshot("hello-snapshot", image),
-		containerd.WithNewSpec(oci.WithImageConfig(image),
-			oci.WithCapabilities([]string{"CAP_NET_RAW"})),
+		containerd.WithRuntime(runtime, &options.Options{}),
+		containerd.WithNewSnapshot(name+"-snapshot", image),
+		containerd.WithNewSpec(
+			oci.WithImageConfig(image),
+
+			oci.WithCapabilities([]string{"CAP_NET_RAW"}),
+		),
 	)
 
-	if errC != nil {
-		log.Fatalf("Fail to create container: %v\n", errC)
+	if err != nil {
+		return fmt.Errorf("failed to create container: %v", err)
 	}
+
 	fmt.Println(container)
+	return nil
 }
 
-const defaultSnapshotter = "overlayfs"
-
-func prepareImage(ctx context.Context, client *containerd.Client, imageName string) (containerd.Image, error) {
-	snapshotter := defaultSnapshotter
+func prepareImage(ctx context.Context, client *containerd.Client, imageName, snapshotter string) (containerd.Image, error) {
 
 	var empty containerd.Image
 	image, err := client.GetImage(ctx, imageName)
@@ -59,6 +76,7 @@ func prepareImage(ctx context.Context, client *containerd.Client, imageName stri
 		if err != nil {
 			return empty, fmt.Errorf("cannot pull: %s", err)
 		}
+
 		image = img
 	}
 

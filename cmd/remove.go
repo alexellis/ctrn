@@ -37,14 +37,17 @@ func removeRunner(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	status, err := t.Status(rootCtx)
-	if err != nil {
-		return fmt.Errorf("Unable to get status for: %s, error: %s", name, err.Error())
+	if t != nil {
+
+		status, err := t.Status(rootCtx)
+		if err != nil {
+			return fmt.Errorf("Unable to get status for: %s, error: %s", name, err.Error())
+		}
+
+		log.Printf("Status: %s", status.Status)
+
+		killTask(rootCtx, t)
 	}
-
-	log.Printf("Status: %s", status.Status)
-
-	killTask(rootCtx, t)
 
 	log.Println("Delete container")
 	if err = container.Delete(rootCtx, containerd.WithSnapshotCleanup); err != nil {

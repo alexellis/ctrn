@@ -69,3 +69,14 @@ alex@alexx:~/go/src/github.com/alexellis/ctrn$ curl -d CNI 10.10.10.4:8080
 alex@alexx:~/go/src/github.com/alexellis/ctrn$ 
 ```
 
+Firecracker notes:
+
+```bash
+
+RUNTIME=aws.firecracker \
+  CONTAINERD=/run/firecracker-containerd/containerd.sock \
+  SNAPSHOTTER=devmapper \
+  sudo -E ./ctrn remove
+
+```
+
