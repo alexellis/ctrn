@@ -49,8 +49,8 @@ func createRunner(cmd *cobra.Command, args []string) error {
 		containerd.WithNewSnapshot(name+"-snapshot", image),
 		containerd.WithNewSpec(
 			oci.WithImageConfig(image),
-
 			oci.WithCapabilities([]string{"CAP_NET_RAW"}),
+			WithVMNetwork,
 		),
 	)
 
