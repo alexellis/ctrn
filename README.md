@@ -92,11 +92,30 @@ alex@alexx:~/go/src/github.com/alexellis/ctrn$
 
 ## Firecracker notes
 
+Export variables:
+
+```bash
+export RUNTIME=aws.firecracker
+export CONTAINERD=/run/firecracker-containerd/containerd.sock
+export SNAPSHOTTER=devmapper
+```
+
+Then:
+
 ```bash
 
-RUNTIME=aws.firecracker \
-  CONTAINERD=/run/firecracker-containerd/containerd.sock \
-  SNAPSHOTTER=devmapper \
-  sudo -E ./ctrn remove
+# Create the container 
+
+sudo -E ./ctrn create
+
+# Start the task
+
+sudo -E ./ctrn start
+
+# Check the networking
+
+# Remove the task
+
+sudo -E ./ctrn remove
 
 ```

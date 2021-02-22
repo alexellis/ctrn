@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"path/filepath"
 
 	"github.com/spf13/cobra"
 
@@ -31,6 +32,7 @@ func startRunner(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("Fail to create task: %v", err)
 	}
 	fmt.Printf("Task %v\n", task)
+
 	id := uuid.New().String()
 
 	cni, err := gocni.New(
@@ -42,8 +44,11 @@ func startRunner(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
+	CNIConfDir := "/etc/cni/net.d"
+	defaultCNIConfFilename := "01-ctrn.conflist"
+
 	// Load the cni configuration
-	if err := cni.Load(gocni.WithLoNetwork, gocni.WithDefaultConf); err != nil {
+	if err := cni.Load(gocni.WithLoNetwork, gocni.WithConfListFile(filepath.Join(CNIConfDir, defaultCNIConfFilename))); err != nil {
 		return fmt.Errorf("failed to load cni configuration: %v", err)
 	}
 

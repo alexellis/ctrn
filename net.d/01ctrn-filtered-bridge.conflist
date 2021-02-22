@@ -1,0 +1,25 @@
+{
+    "cniVersion": "0.4.0",
+    "name": "ctrn",
+    "plugins": [
+      {
+        "type": "bridge",
+        "bridge": "ctrn0",
+        "isGateway": true,
+        "ipMasq": true,
+        "ipam": {
+            "type": "host-local",
+            "subnet": "192.168.127.0/24",
+            "routes": [
+                { "dst": "0.0.0.0/0" }
+            ]
+        }
+      },
+      {
+        "type": "firewall"
+      },
+      {
+      "type": "tc-redirect-tap"
+      }
+    ]
+}
